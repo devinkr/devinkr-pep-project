@@ -44,6 +44,9 @@ public class MessageTest {
      * These tests are for the MessageDAO class
      */
 
+    /**
+     * The messageDAO should retrieve all messages when getAllMessages is called.
+     */
     @Test
     public void messageDAO_GetAllMessagesTest() {
         List<Message> allMessages = messageDAO.getAllMessages();
@@ -53,4 +56,16 @@ public class MessageTest {
         Assert.assertTrue(allMessages.contains(m2));
     }
 
+    /**
+     * The messageDAO should retrieve all messages by user when getAllMessagesByAccountId is called
+     */
+    @Test
+    public void messageDAO_GetAllMessagesByAccountIdTest() {
+        List<Message> allMessages = messageDAO.getAllMessagesByAccountId(1);
+        Message m1 = new Message(1, "This is a test message", 1678823535691L);
+        Message m2 = new Message(1, "This is another test message", 1678823535691L);
+        Assert.assertTrue(allMessages.contains(m1));
+        Assert.assertTrue(allMessages.contains(m2));
+        Assert.assertEquals(2, allMessages.size());
+    }
 }
