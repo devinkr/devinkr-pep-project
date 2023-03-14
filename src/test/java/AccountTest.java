@@ -52,6 +52,17 @@ public class AccountTest {
     }
 
     @Test
+    public void accountDAO_GetAccountByUsernameTest() {
+        Account account = accountDAO.getAccountByUsername("bob123");
+        if (account == null) {
+            Assert.fail();
+        } else {
+            Account user1 = new Account(1, "bob123", "password");
+            Assert.assertEquals(account, user1);
+        }
+    }
+
+    @Test
     public void accountDAO_InsertAccountCheckByIdTest() {
         Account newUser = new Account("Steve", "pass12345");
         accountDAO.insertAccount(newUser);
