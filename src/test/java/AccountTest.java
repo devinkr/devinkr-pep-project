@@ -19,7 +19,7 @@ public class AccountTest {
     public AccountService accountService;
 
     /**
-     * set up a flightDAO and recreate the database tables and mock data.
+     * set up an AccountDAO and reset the database tables and create mock data.
      */
     @Before
     public void setUp(){
