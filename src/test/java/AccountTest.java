@@ -1,8 +1,8 @@
 import DAO.AccountDAO;
 import Model.Account;
 import Service.AccountService;
+import Util.BCrypt;
 import Util.ConnectionUtil;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +49,20 @@ public class AccountTest {
             Account user1 = new Account(1, "bob123", "password");
             Assert.assertEquals(account, user1);
         }
+    }
+
+    @Test
+    public void accountDAO_InsertAccountCheckByIdTest() {
+        Account newUser = new Account("Steve", "pass12345");
+        accountDAO.insertAccount(newUser);
+
+        Account userExpected = new Account(2, "Steve", "pass12345");
+        Account userActual = accountDAO.getAccountById(2);
+        Assert.assertEquals(userExpected.getAccount_id(), userActual.getAccount_id());
+        Assert.assertEquals(userExpected.getUsername(), userActual.getUsername());
+
+        boolean matched = BCrypt.checkpw("pass12345", userActual.getPassword());
+        Assert.assertTrue(matched);
 
     }
 }
