@@ -1,12 +1,9 @@
 package DAO;
 
 import Model.Account;
+import Util.BCrypt;
 import Util.ConnectionUtil;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import java.security.SecureRandom;
-import java.security.spec.KeySpec;
 import java.sql.*;
 
 public class AccountDAO {
@@ -44,17 +41,12 @@ public class AccountDAO {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String username = account.getUsername();
-
-            // Hash the user's password
-            SecureRandom random = new SecureRandom();
-            byte[] salt = new byte[16];
-            random.nextBytes(salt);
-            String password = hashPassword(account.getPassword(), salt);
+            String passwordHash = BCrypt.hashpw(account.getPassword(), BCrypt.gensalt(12));
 
             String sql = "INSERT into account (username, password) VALUES (?,?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
+            preparedStatement.setString(2, passwordHash);
 
             preparedStatement.executeUpdate();
             ResultSet pkrs = preparedStatement.getGeneratedKeys();
@@ -68,13 +60,6 @@ public class AccountDAO {
             System.out.println(e.getMessage());
         }
         return null;
-    }
-
-    public static String hashPassword(String password, byte[] salt) throws Exception{
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
-        SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-        byte[] hash = f.generateSecret(spec).getEncoded();
-        return String.valueOf(hash);
     }
 }
 
