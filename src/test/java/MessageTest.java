@@ -50,8 +50,8 @@ public class MessageTest {
     @Test
     public void messageDAO_GetAllMessagesTest() {
         List<Message> allMessages = messageDAO.getAllMessages();
-        Message m1 = new Message(1, "This is a test message", 1678823535691L);
-        Message m2 = new Message(1, "This is another test message", 1678823535691L);
+        Message m1 = new Message(1,1, "This is a test message", 1678823535691L);
+        Message m2 = new Message(2,1, "This is another test message", 1678823535691L);
         Assert.assertTrue(allMessages.contains(m1));
         Assert.assertTrue(allMessages.contains(m2));
     }
@@ -62,10 +62,37 @@ public class MessageTest {
     @Test
     public void messageDAO_GetAllMessagesByAccountIdTest() {
         List<Message> allMessages = messageDAO.getAllMessagesByAccountId(1);
-        Message m1 = new Message(1, "This is a test message", 1678823535691L);
-        Message m2 = new Message(1, "This is another test message", 1678823535691L);
+        Message m1 = new Message(1,1, "This is a test message", 1678823535691L);
+        Message m2 = new Message(2,1, "This is another test message", 1678823535691L);
         Assert.assertTrue(allMessages.contains(m1));
         Assert.assertTrue(allMessages.contains(m2));
         Assert.assertEquals(2, allMessages.size());
     }
+
+    /**
+     * The messageDAO should return a message with the specific ID when getMessageById is called
+     */
+    @Test
+    public void messageDAO_GetMessageById() {
+        Message message = messageDAO.getMessageById(1);
+        if (message == null) {
+            Assert.fail();
+        } else {
+            Message m1 = new Message(1, 1, "This is a test message", 1678823535691L);
+            Assert.assertEquals(m1, message);
+        }
+    }
+
+    /**
+     * When a message is added it should be retrievable by the message ID.
+     */
+    @Test
+    public void messageDAO_InsertMessageCheckByIdTest() {
+        Message newMessage = new Message(1, "This is the third message", 1678823535691L);
+        messageDAO.insertMessage(newMessage);
+        Message mExpected = new Message(3,1, "This is the third message", 1678823535691L);
+        Message mActual = messageDAO.getMessageById(3);
+        Assert.assertEquals(mExpected, mActual);
+    }
+
 }
