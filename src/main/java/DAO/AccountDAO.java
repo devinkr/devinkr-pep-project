@@ -9,7 +9,7 @@ import java.sql.*;
 public class AccountDAO {
 
     /**
-     * Get an account from the database by username
+     * Get an account from the database by ID
      *
      * @param id an account ID.
      */
@@ -19,6 +19,30 @@ public class AccountDAO {
             String sql = "SELECT * FROM account WHERE account_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()) {
+                return new Account(rs.getInt("account_id"),
+                        rs.getString("username"),
+                        rs.getString("password") );
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Get an account from the database by username
+     *
+     * @param username an account username.
+     */
+    public Account getAccountByUsername(String username) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "SELECT * FROM account WHERE username = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
 
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()) {
