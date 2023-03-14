@@ -114,7 +114,7 @@ public class MessageTest {
     public void messageDAO_DeleteMessageCheckByIdTest() {
         messageDAO.deleteMessage(1);
         Message mExpected = messageDAO.getMessageById(1);
-        Assert.assertEquals(null, mExpected);
+        Assert.assertNull(mExpected);
     }
 
     /**
