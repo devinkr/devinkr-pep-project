@@ -95,4 +95,16 @@ public class MessageTest {
         Assert.assertEquals(mExpected, mActual);
     }
 
+    /**
+     * When a message is added it should be listed in all messages.
+     */
+    @Test
+    public void messageDAO_InsertMessageCheckAllMessagesTest() {
+        Message newMessage = new Message(1, "This is the third message", 1678823535691L);
+        messageDAO.insertMessage(newMessage);
+        Message mExpected = new Message(3,1, "This is the third message", 1678823535691L);
+        List<Message> allMessages = messageDAO.getAllMessages();
+        Assert.assertTrue(allMessages.contains(mExpected));
+    }
+
 }
