@@ -107,4 +107,41 @@ public class MessageTest {
         Assert.assertTrue(allMessages.contains(mExpected));
     }
 
+    /**
+     * When a message is deleted it should not be retrievable by ID.
+     */
+    @Test
+    public void messageDAO_DeleteMessageCheckByIdTest() {
+        messageDAO.deleteMessage(1);
+        Message mExpected = messageDAO.getMessageById(1);
+        Assert.assertEquals(null, mExpected);
+    }
+
+    /**
+     * When a message is deleted it should not be in list of all messages.
+     */
+    @Test
+    public void messageDAO_DeleteMessageCheckAllMessagesTest() {
+        Message mExpected = messageDAO.getMessageById(1);
+        messageDAO.deleteMessage(1);
+        List<Message> allMessages = messageDAO.getAllMessages();
+        Assert.assertFalse(allMessages.contains(mExpected));
+    }
+
+    /**
+     * When a message is updated, the updated values should be retrieved when message is next retrieved.
+     */
+    @Test
+    public void messageDAO_UpdateMessageTest(){
+        Message mUpdated = new Message(1, "This is an updated test message", 1678823535691L);
+        messageDAO.updateMessage(1, mUpdated);
+        Message mExpected = new Message(1,
+                1,
+                "This is an updated test message",
+                1678823535691L);
+
+        Message mActual = messageDAO.getMessageById(1);
+        Assert.assertEquals(mExpected, mActual);
+    }
+
 }
