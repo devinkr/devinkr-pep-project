@@ -76,4 +76,32 @@ public class AccountTest {
         Assert.assertTrue(matched);
 
     }
+
+    /**
+     * These tests are for the AccountService class
+     */
+
+    @Test
+    public void accountService_AddAccountTest() {
+        Account newAccount = new Account("Gary", "pass12345");
+        Account persistedAccount = new Account(1, "Gary", "pass12345");
+        Mockito.when(mockAccountDao.insertAccount(newAccount)).thenReturn(persistedAccount);
+        Account actualAccount = accountService.addAccount(newAccount);
+        Assert.assertEquals(persistedAccount, actualAccount);
+        Mockito.verify(mockAccountDao).insertAccount(Mockito.any());
+    }
+
+    @Test
+    public void accountService_AddAccountWithoutUsernameTest() {
+        Account newAccount = new Account("", "password");
+        Account actualAccount = accountService.addAccount(newAccount);
+        Assert.assertEquals(null, actualAccount);
+    }
+
+    @Test
+    public void accountService_AddAccountWithShortPassword() {
+        Account newAccount = new Account("Mary", "123");
+        Account actualAccount = accountService.addAccount(newAccount);
+        Assert.assertEquals(null, actualAccount);
+    }
 }
