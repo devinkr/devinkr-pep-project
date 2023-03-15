@@ -129,6 +129,25 @@ public class MessageTest {
     }
 
     /**
+     * When a message is deleted it should return the deleted message
+     */
+    @Test
+    public void messageDAO_DeleteMessageCheckReturnTest() {
+        Message mExpected = messageDAO.getMessageById(1);
+        Message mDeleted = messageDAO.deleteMessage(1);
+        Assert.assertEquals(mExpected, mDeleted);
+    }
+
+    /**
+     * If id doesn't exist for message to delete should return null.
+     */
+    @Test
+    public void messageDAO_DeleteMessageMessageDoesntExistTest() {
+        Message mDeleted = messageDAO.deleteMessage(5);
+        Assert.assertNull(mDeleted);
+    }
+
+    /**
      * When a message is updated, the updated values should be retrieved when message is next retrieved.
      */
     @Test
