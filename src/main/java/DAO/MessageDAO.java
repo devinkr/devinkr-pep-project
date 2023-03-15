@@ -109,7 +109,6 @@ public class MessageDAO {
             ResultSet pkrs = preparedStatement.getGeneratedKeys();
             if(pkrs.next()){
                 int generated_id = pkrs.getInt(1);
-                message.setMessage_id(generated_id);
                 return new Message(generated_id,
                         pkrs.getInt("posted_by"),
                         pkrs.getString("message_text"),
@@ -128,6 +127,24 @@ public class MessageDAO {
      * @return the deleted message.
      */
     public Message deleteMessage(int id) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            Message message = getMessageById(id);
+            if (message == null) {
+                return null;
+            }
+
+            String sql = "DELETE FROM message WHERE message_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+
+            int result = preparedStatement.executeUpdate();
+            if(result > 0) {
+                return message;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
