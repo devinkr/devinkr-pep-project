@@ -41,7 +41,7 @@ public class SocialMediaController {
 
         app.get("/messages/{message_id}", this::getMessageHandler);
 //        app.patch("/messages/{message_id}", this::updateMessageHandler);
-//        app.delete("/messages/{message_id", this::deleteMessageHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageHandler);
 //
         app.get("/accounts/{account_id}/messages", this::getMessagesByAccountHandler);
 
@@ -79,7 +79,7 @@ public class SocialMediaController {
      * Login Handler
      * Checks that the given credentials match the username and password in database otherwise
      * returns a status code of 401 Unauthorized.
-     * @param ctx Javalin context object
+     * @param ctx Javalin context object.
      * @throws JsonProcessingException on error converting JSON into object.
      */
     private void loginAccountHandler(Context ctx) throws JsonProcessingException {
@@ -94,19 +94,19 @@ public class SocialMediaController {
     }
 
     /**
-     * Handler to get all messages
+     * Handler to get all messages.
      *
-     * @param ctx Javalin context Object
+     * @param ctx Javalin context Object.
      */
     private void getAllMessagesHandler(Context ctx) {
         ctx.json(messageService.getAllMessages());
     }
 
     /**
-     * Handler to post new message
+     * Handler to post new message.
      * returns status code 400 if message text is blank or too long (>= 255 chars).
      *
-     * @param ctx Javalin context object
+     * @param ctx Javalin context object.
      * @throws JsonProcessingException on error converting JSON into object.
      */
     private void postMessageHandler(Context ctx) throws JsonProcessingException {
@@ -121,24 +121,49 @@ public class SocialMediaController {
     }
 
     /**
-     * Handler to get a message by ID
+     * Handler to get a message by ID.
      * returns status 200 with matching message or blank if no message matches id.
      *
-     * @param ctx Javalin context object
+     * @param ctx Javalin context object.
      */
-    public void getMessageHandler(Context ctx) {
+    public void getMessageHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
         int id = Integer.parseInt(ctx.pathParam("message_id"));
-        ctx.json(messageService.getMessageById(id));
+        Message message = messageService.getMessageById(id);
+        if (message == null) {
+            ctx.json("");
+        } else {
+            ctx.json(mapper.writeValueAsString(message));
+        }
     }
 
     /**
-     * Handler to get all messages made by a given account
+     * Handler to delete message by id.
+     * returns status 200 and deleted message or blank if no message was deleted.
+     *
+     * @param ctx Javalin context object.
+     */
+    public void deleteMessageHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        int id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message deletedMessage = messageService.deleteMessage(id);
+        if (deletedMessage == null) {
+            ctx.json("");
+        } else {
+            ctx.json(mapper.writeValueAsString(deletedMessage));
+        }
+    }
+
+    /**
+     * Handler to get all messages made by a given account.
      * returns status 200 with list of messages or empty list if no matching account.
      *
-     * @param ctx Javalin context object
+     * @param ctx Javalin context object.
      */
     public void getMessagesByAccountHandler(Context ctx) {
         int id = Integer.parseInt(ctx.pathParam("account_id"));
         ctx.json(messageService.getAllMessagesByAccountId(id));
     }
+
+
 }
