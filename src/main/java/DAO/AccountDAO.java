@@ -77,8 +77,9 @@ public class AccountDAO {
 
             if(pkrs.next()){
                 int generated_id = pkrs.getInt(1);
-                account.setAccount_id(generated_id);
-                return account;
+                return new Account(generated_id,
+                        pkrs.getString("username"),
+                        pkrs.getString("password") );
             }
         } catch(Exception e) {
             System.out.println(e.getMessage());
