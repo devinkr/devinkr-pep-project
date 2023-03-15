@@ -1,5 +1,6 @@
 import DAO.MessageDAO;
 import Model.Message;
+import Service.MessageService;
 import Util.ConnectionUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,12 +10,14 @@ import org.mockito.Mockito;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessageTest {
 
     public MessageDAO messageDAO;
-    public MessageDAO mockMessageDao;
+    public MessageDAO mockMessageDAO;
+    public MessageService messageService;
 
     /**
      * set up a messageDAO, reset the database tables, and create mock data.
@@ -37,7 +40,7 @@ public class MessageTest {
             System.out.println(e.getMessage());
         }
         messageDAO = new MessageDAO();
-        mockMessageDao = Mockito.mock(MessageDAO.class);
+        mockMessageDAO = Mockito.mock(MessageDAO.class);
     }
 
     /*
@@ -185,6 +188,74 @@ public class MessageTest {
                 1,
                 "This is an updated test message",
                 1678823535691L);
+        Assert.assertEquals(mExpected, mActual);
+    }
+
+    /*
+     * These tests are for the MessageService class
+     */
+
+    /**
+     * when a messageDAO returns all messages, messageService.getAllMessages should return all messages.
+     */
+    @Test
+    public void messageService_GetAllMessagesTest() {
+        List<Message> messages = new ArrayList<>();
+        messages.add(new Message(1, "First message", 1678823535691L));
+        messages.add(new Message(2, "Second message", 1678823535691L));
+        messages.add(new Message(3, "Third message", 1678823535691L));
+        Mockito.when(mockMessageDAO.getAllMessages()).thenReturn(messages);
+        Assert.assertEquals(messages, messageService.getAllMessages());
+        Mockito.verify(mockMessageDAO).getAllMessages();
+    }
+
+    /**
+     * when a messageDAO returns all messages by account ID, messageService.getAllMessagesByAccountID
+     * should return all the same messages.
+     */
+    @Test
+    public void messageService_GetAllMessagesByAccountIdTest() {
+        List<Message> messages = new ArrayList<>();
+        messages.add(new Message(1, "First message", 1678823535691L));
+        messages.add(new Message(1, "Second message", 1678823535691L));
+        messages.add(new Message(1, "Third message", 1678823535691L));
+        Mockito.when(mockMessageDAO.getAllMessagesByAccountId(1)).thenReturn(messages);
+        Assert.assertEquals(messages, messageService.getAllMessagesByAccountId(1));
+        Mockito.verify(mockMessageDAO).getAllMessagesByAccountId(1);
+    }
+
+    @Test
+    public void messageService_GetMessageByIdTest() {
+        Message message = new Message(1,1, "This is a test message", 1678823535691L);
+        Mockito.when(mockMessageDAO.getMessageById(1)).thenReturn(message);
+        Assert.assertEquals(message, messageService.getMessageById(1));
+    }
+
+
+    @Test
+    public void messageService_AddMessageTest() {
+        Message message = new Message(1, "This is a test message", 1678823535691L);
+        Message mExpected = new Message(1,1, "This is a test message", 1678823535691L);
+        Mockito.when(mockMessageDAO.insertMessage(message)).thenReturn(mExpected);
+        Message mActual = messageService.addMessage(message);
+        Assert.assertEquals(mExpected, mActual);
+        Mockito.verify(mockMessageDAO).insertMessage(Mockito.any());
+    }
+
+    @Test
+    public void messageService_DeleteMessageTest() {
+        Message mExpected = new Message(1,1, "This is a test message", 1678823535691L);
+        Mockito.when(mockMessageDAO.deleteMessage(1)).thenReturn(mExpected);
+        Message mActual = messageService.deleteMessage(1);
+        Assert.assertEquals(mExpected, mActual);
+        Mockito.verify(mockMessageDAO).deleteMessage(1);
+    }
+
+    @Test
+    public void messageService_UpdateMessageTest() {
+        Message mExpected = new Message(1,1, "This is a test message", 1678823535691L);
+        Mockito.when(mockMessageDAO.updateMessage(1, "This is updated Message")).thenReturn(mExpected);
+        Message mActual = messageService.updateMessage(1, "This is updated Message");
         Assert.assertEquals(mExpected, mActual);
     }
 
