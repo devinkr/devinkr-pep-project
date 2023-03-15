@@ -21,28 +21,66 @@ public class MessageService {
         this.messageDAO = messageDAO;
     }
 
-
+    /**
+     * Get all messages
+     *
+     * @return list of all messages
+     */
     public List<Message> getAllMessages() {
         return messageDAO.getAllMessages();
     }
 
+    /**
+     * Get all messages made by a user
+     *
+     * @param id an account id
+     * @return List of messages made by user with id
+     */
     public List<Message> getAllMessagesByAccountId(int id) {
         return messageDAO.getAllMessagesByAccountId(id);
     }
 
+    /**
+     * Get a message by id
+     *
+     * @param id a message id.
+     * @return message with given message id.
+     */
     public Message getMessageById(int id) {
-        return null;
+        return messageDAO.getMessageById(id);
     }
 
+    /**
+     * Add a new message
+     *
+     * @param message an object representing message to be added.
+     * @return newly added message with a message_id.
+     */
     public Message addMessage(Message message) {
-        return null;
+        return messageDAO.insertMessage(message);
     }
 
+    /**
+     * Delete a message matching id.
+     *
+     * @param id a message id.
+     * @return message that was deleted.
+     */
     public Message deleteMessage(int id) {
-        return null;
+        return messageDAO.deleteMessage(id);
     }
 
+    /**
+     *
+     * @param id a message id.
+     * @param messageText message content to be updated.
+     * @return updated message.
+     */
     public Message updateMessage(int id, String messageText) {
-        return null;
+        Message foundMessage = messageDAO.getMessageById(id);
+        if (foundMessage == null) {
+            return null;
+        }
+        return messageDAO.updateMessage(id, messageText);
     }
 }
