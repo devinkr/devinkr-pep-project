@@ -38,16 +38,16 @@ public class MessageDAO {
     /**
      * Retrieve all messages written by a particular user.
      *
-     * @param account_id a user account ID.
+     * @param id a user account ID.
      * @return all the messages created by the user.
      */
-    public List<Message> getAllMessagesByAccountId(int account_id) {
+    public List<Message> getAllMessagesByAccountId(int id) {
         List<Message> messages = new ArrayList<>();
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "SELECT * from message WHERE posted_by = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, account_id);
+            preparedStatement.setInt(1, id);
 
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()) {
