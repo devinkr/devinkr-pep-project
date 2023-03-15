@@ -109,10 +109,7 @@ public class MessageDAO {
             ResultSet pkrs = preparedStatement.getGeneratedKeys();
             if(pkrs.next()){
                 int generated_id = pkrs.getInt(1);
-                return new Message(generated_id,
-                        pkrs.getInt("posted_by"),
-                        pkrs.getString("message_text"),
-                        pkrs.getLong("time_posted_epoch"));
+                return getMessageById(generated_id);
             }
         } catch(SQLException e) {
             System.out.println(e.getMessage());
@@ -152,7 +149,7 @@ public class MessageDAO {
      * Updates the text of the specified message.
      *
      * @param id a message id
-     * @param message the message object with updated text.
+     * @param messageText the message object with updated text.
      * @return the updated message if successful.
      */
     public Message updateMessage(int id, String messageText) {
