@@ -75,7 +75,6 @@ public class MessageService {
     public Message deleteMessage(int id) {
         Message message = messageDAO.getMessageById(id);
         if (message == null) {
-            System.out.println("Message doesn't exist");
             return null;
         }
         boolean deleted = messageDAO.deleteMessage(id);
