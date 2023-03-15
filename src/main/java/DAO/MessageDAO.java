@@ -171,6 +171,4 @@ public class MessageDAO {
         }
         return null;
     }
-
-
 }
