@@ -95,13 +95,13 @@ public class AccountTest {
     public void accountService_AddAccountWithoutUsernameTest() {
         Account newAccount = new Account("", "password");
         Account actualAccount = accountService.addAccount(newAccount);
-        Assert.assertEquals(null, actualAccount);
+        Assert.assertNull(actualAccount);
     }
 
     @Test
     public void accountService_AddAccountWithShortPassword() {
         Account newAccount = new Account("Mary", "123");
         Account actualAccount = accountService.addAccount(newAccount);
-        Assert.assertEquals(null, actualAccount);
+        Assert.assertNull(actualAccount);
     }
 }
