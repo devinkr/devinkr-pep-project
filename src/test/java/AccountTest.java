@@ -99,9 +99,40 @@ public class AccountTest {
     }
 
     @Test
-    public void accountService_AddAccountWithShortPassword() {
+    public void accountService_AddAccountWithShortPasswordTest() {
         Account newAccount = new Account("Mary", "123");
         Account actualAccount = accountService.addAccount(newAccount);
         Assert.assertNull(actualAccount);
     }
+
+    @Test
+    public void accountService_VerifyCredentialsTest() {
+        Account credentials = new Account("Steve", "pass12345");
+        String passwordHash = BCrypt.hashpw("pass12345", BCrypt.gensalt(12));
+        Account account = new Account("Steve", passwordHash);
+        Mockito.when(mockAccountDao.getAccountByUsername("Steve")).thenReturn(account);
+        Account accountActual = accountService.verifyCredentials(credentials);
+        Assert.assertEquals(credentials, accountActual);
+        Mockito.verify(mockAccountDao).getAccountByUsername("Steve");
+    }
+
+    @Test
+    public void accountService_VerifyCredentialsWithBlankUsernameTest() {
+        Account credentials = new Account("", "pass12345");
+        Mockito.when(mockAccountDao.getAccountByUsername("")).thenReturn(null);
+        Account accountActual = accountService.verifyCredentials(credentials);
+        Assert.assertNull(accountActual);
+    }
+
+    @Test
+    public void accountService_VerifyCredentialsWithIncorrectPasswordTest() {
+        Account credentials = new Account("Steve", "wrongpass");
+        String passwordHash = BCrypt.hashpw("pass12345", BCrypt.gensalt(12));
+        Account account = new Account("Steve", passwordHash);
+        Mockito.when(mockAccountDao.getAccountByUsername("Steve")).thenReturn(account);
+        Account accountActual = accountService.verifyCredentials(credentials);
+        Assert.assertNull(accountActual);
+        Mockito.verify(mockAccountDao).getAccountByUsername("Steve");
+    }
+
 }
