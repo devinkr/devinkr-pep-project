@@ -253,8 +253,10 @@ public class MessageTest {
 
     @Test
     public void messageService_UpdateMessageTest() {
-        Message mExpected = new Message(1,1, "This is a test message", 1678823535691L);
+        Message message = new Message(1,1, "This is a test message", 1678823535691L);
+        Message mExpected = new Message(1,1, "This is updated Message", 1678823535691L);
         Mockito.when(mockMessageDAO.updateMessage(1, "This is updated Message")).thenReturn(mExpected);
+        Mockito.when(mockMessageDAO.getMessageById(1)).thenReturn(message);
         Message mActual = messageService.updateMessage(1, "This is updated Message");
         Assert.assertEquals(mExpected, mActual);
     }
