@@ -153,7 +153,7 @@ public class MessageTest {
     @Test
     public void messageDAO_UpdateMessageTest(){
         Message mUpdated = new Message(1, "This is an updated test message", 1678823535691L);
-        messageDAO.updateMessage(1, mUpdated);
+        messageDAO.updateMessage(1, mUpdated.getMessage_text());
         Message mExpected = new Message(1,
                 1,
                 "This is an updated test message",
