@@ -30,7 +30,7 @@ public class AccountService {
      */
     public Account addAccount(Account account){
         // Verify username is not null and password is at least 4 characters
-        if (account.getUsername() == null || account.getPassword().length() < 4) {
+        if (account.getUsername().equals("") || account.getPassword().length() < 4) {
             return null;
         }
 
