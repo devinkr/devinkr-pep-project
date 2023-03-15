@@ -40,7 +40,7 @@ public class MessageTest {
         mockMessageDao = Mockito.mock(MessageDAO.class);
     }
 
-    /**
+    /*
      * These tests are for the MessageDAO class
      */
 
@@ -108,6 +108,17 @@ public class MessageTest {
     }
 
     /**
+     * When a message is added it should return the new message.
+     */
+    @Test
+    public void messageDAO_InsertMessageCheckReturnTest() {
+        Message newMessage = new Message(1, "This is the third message", 1678823535691L);
+        Message mExpected = new Message(3,1, "This is the third message", 1678823535691L);
+        Message mActual = messageDAO.insertMessage(newMessage);
+        Assert.assertEquals(mExpected, mActual);
+    }
+
+    /**
      * When a message is deleted it should not be retrievable by ID.
      */
     @Test
@@ -160,6 +171,20 @@ public class MessageTest {
                 1678823535691L);
 
         Message mActual = messageDAO.getMessageById(1);
+        Assert.assertEquals(mExpected, mActual);
+    }
+
+    /**
+     * Check return value of updateMessage is new updated message.
+     */
+    @Test
+    public void messageDAO_UpdateMessageCheckReturnTest(){
+        Message mUpdated = new Message(1, "This is an updated test message", 1678823535691L);
+        Message mActual = messageDAO.updateMessage(1, mUpdated.getMessage_text());
+        Message mExpected = new Message(1,
+                1,
+                "This is an updated test message",
+                1678823535691L);
         Assert.assertEquals(mExpected, mActual);
     }
 
