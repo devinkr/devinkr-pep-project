@@ -65,6 +65,7 @@ public class AccountDAO {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String username = account.getUsername();
+            String password = account.getPassword();
             String passwordHash = BCrypt.hashpw(account.getPassword(), BCrypt.gensalt(12));
 
             String sql = "INSERT into account (username, password) VALUES (?,?)";
@@ -77,9 +78,7 @@ public class AccountDAO {
 
             if(pkrs.next()){
                 int generated_id = pkrs.getInt(1);
-                return new Account(generated_id,
-                        pkrs.getString("username"),
-                        pkrs.getString("password") );
+                return new Account(generated_id, username, password);
             }
         } catch(Exception e) {
             System.out.println(e.getMessage());
