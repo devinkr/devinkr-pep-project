@@ -2,6 +2,7 @@ package Service;
 
 import DAO.AccountDAO;
 import Model.Account;
+import Util.BCrypt;
 
 public class AccountService {
 
@@ -15,7 +16,7 @@ public class AccountService {
      * Constructor for an accountService when an accountDAO is provided.
      * This is used for when a mock accountDAO that exhibits mock behavior is used in the test cases.
      * This allows the testing of AccountService independently of AccountDAO.
-     * @param accountDAO
+     * @param accountDAO is mock accountDAO
      */
     public AccountService(AccountDAO accountDAO){
         this.accountDAO = accountDAO;
@@ -41,5 +42,25 @@ public class AccountService {
         }
 
         return accountDAO.insertAccount(account);
+    }
+
+    public Account verifyCredentials(Account credentials) {
+        if (credentials.getUsername() == "") {
+            return null;
+        }
+
+        Account account = accountDAO.getAccountByUsername(credentials.getUsername());
+        if (account == null) {
+            return null;
+        }
+
+        boolean matched = BCrypt.checkpw(credentials.getPassword(), account.getPassword());
+        if (matched) {
+            // Setting password to plaintext since test expects plaintext password and not hash.
+            // Would normally never send a password in a response and especially not in plaintext.
+            account.setPassword(credentials.getPassword());
+            return account;
+        }
+        return null;
     }
 }
