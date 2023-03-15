@@ -45,7 +45,7 @@ public class AccountService {
     }
 
     public Account verifyCredentials(Account credentials) {
-        if (credentials.getUsername() == "") {
+        if (credentials.getUsername().equals("")) {
             return null;
         }
 
