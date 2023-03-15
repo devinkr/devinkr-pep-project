@@ -1,7 +1,12 @@
 package DAO;
 
 import Model.Message;
+import Util.ConnectionUtil;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +19,22 @@ public class MessageDAO {
      */
     public List<Message> getAllMessages() {
         List<Message> messages = new ArrayList<>();
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "SELECT * from message";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()) {
+                Message message = new Message(rs.getInt("message_id"),
+                        rs.getInt("posted_by"),
+                        rs.getString("message_text"),
+                        rs.getLong("time_posted_epoch"));
+                messages.add(message);
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return messages;
     }
 
@@ -25,6 +46,23 @@ public class MessageDAO {
      */
     public List<Message> getAllMessagesByAccountId(int account_id) {
         List<Message> messages = new ArrayList<>();
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "SELECT * from message WHERE posted_by = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, account_id);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()) {
+                Message message = new Message(rs.getInt("message_id"),
+                        rs.getInt("posted_by"),
+                        rs.getString("message_text"),
+                        rs.getLong("time_posted_epoch"));
+                messages.add(message);
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return messages;
     }
 
