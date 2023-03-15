@@ -92,6 +92,12 @@ public class MessageService {
      * @return updated message.
      */
     public Message updateMessage(int id, String messageText) {
+        // Check if message text is blank or too long
+        if (messageText.length() == 0 || messageText.length() >= 255) {
+            return null;
+        }
+
+        // If message doesn't exist return null
         Message foundMessage = messageDAO.getMessageById(id);
         if (foundMessage == null) {
             return null;
