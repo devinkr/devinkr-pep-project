@@ -73,7 +73,16 @@ public class MessageService {
      * @return message that was deleted.
      */
     public Message deleteMessage(int id) {
-        return messageDAO.deleteMessage(id);
+        Message message = messageDAO.getMessageById(id);
+        if (message == null) {
+            System.out.println("Message doesn't exist");
+            return null;
+        }
+        boolean deleted = messageDAO.deleteMessage(id);
+        if (deleted) {
+            return message;
+        }
+        return null;
     }
 
     /**

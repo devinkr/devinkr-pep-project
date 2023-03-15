@@ -123,26 +123,21 @@ public class MessageDAO {
      * @param id a message ID.
      * @return the deleted message.
      */
-    public Message deleteMessage(int id) {
+    public boolean deleteMessage(int id) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            Message message = getMessageById(id);
-            if (message == null) {
-                return null;
-            }
-
             String sql = "DELETE FROM message WHERE message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
 
             int result = preparedStatement.executeUpdate();
-            if(result > 0) {
-                return message;
+            if (result >0) {
+                return true;
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return null;
+        return false;
     }
 
     /**

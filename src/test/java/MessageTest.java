@@ -148,9 +148,8 @@ public class MessageTest {
      */
     @Test
     public void messageDAO_DeleteMessageCheckReturnTest() {
-        Message mExpected = messageDAO.getMessageById(1);
-        Message mDeleted = messageDAO.deleteMessage(1);
-        Assert.assertEquals(mExpected, mDeleted);
+        boolean deleted = messageDAO.deleteMessage(1);
+        Assert.assertTrue(deleted);
     }
 
     /**
@@ -158,8 +157,8 @@ public class MessageTest {
      */
     @Test
     public void messageDAO_DeleteMessageMessageDoesntExistTest() {
-        Message mDeleted = messageDAO.deleteMessage(5);
-        Assert.assertNull(mDeleted);
+        boolean deleted = messageDAO.deleteMessage(5);
+        Assert.assertFalse(deleted);
     }
 
     /**
@@ -245,10 +244,19 @@ public class MessageTest {
     @Test
     public void messageService_DeleteMessageTest() {
         Message mExpected = new Message(1,1, "This is a test message", 1678823535691L);
-        Mockito.when(mockMessageDAO.deleteMessage(1)).thenReturn(mExpected);
+        Mockito.when(mockMessageDAO.getMessageById(1)).thenReturn(mExpected);
+        Mockito.when(mockMessageDAO.deleteMessage(1)).thenReturn(true);
         Message mActual = messageService.deleteMessage(1);
         Assert.assertEquals(mExpected, mActual);
         Mockito.verify(mockMessageDAO).deleteMessage(1);
+    }
+
+    @Test
+    public void messageService_DeleteNonExistentMessageTest() {
+        Mockito.when(mockMessageDAO.getMessageById(100)).thenReturn(null);
+        Message message = messageService.deleteMessage(100);
+        Assert.assertNull(message);
+        Mockito.verify(mockMessageDAO).getMessageById(100);
     }
 
     @Test
