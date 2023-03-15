@@ -57,6 +57,12 @@ public class MessageService {
      * @return newly added message with a message_id.
      */
     public Message addMessage(Message message) {
+        // Check if message text is blank or too long
+        int messageLength = message.getMessage_text().length();
+        if (messageLength == 0 || messageLength >= 255) {
+            return null;
+        }
+
         return messageDAO.insertMessage(message);
     }
 
