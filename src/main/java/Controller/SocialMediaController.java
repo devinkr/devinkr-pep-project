@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Account;
+import Model.Message;
 import Service.AccountService;
 import Service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,15 +35,15 @@ public class SocialMediaController {
         app.get("example-endpoint", this::exampleHandler);
         app.post("/register", this::registerAccountHandler);
         app.post("/login", this::loginAccountHandler);
-//
-//        app.get("/messages", this::getAllMessagesHandler);
-//        app.post("/messages", this::postMessageHandler);
-//
-//        app.get("/messages/{message_id}", this::getMessageHandler);
+
+        app.get("/messages", this::getAllMessagesHandler);
+        app.post("/messages", this::postMessageHandler);
+
+        app.get("/messages/{message_id}", this::getMessageHandler);
 //        app.patch("/messages/{message_id}", this::updateMessageHandler);
 //        app.delete("/messages/{message_id", this::deleteMessageHandler);
 //
-//        app.get("/accounts/{account_id}/messages", this::getMessagesByIdHandler);
+        app.get("/accounts/{account_id}/messages", this::getMessagesByAccountHandler);
 
         return app;
     }
@@ -55,6 +56,14 @@ public class SocialMediaController {
         context.json("sample text");
     }
 
+    /**
+     * Handler to register new Accounts
+     * Will return status code 400 on error such as if account already exists, username is blank,
+     * or password is less than 4 characters.
+     *
+     * @param ctx Javalin context object
+     * @throws JsonProcessingException on error converting JSON into object.
+     */
     private void registerAccountHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
@@ -66,6 +75,13 @@ public class SocialMediaController {
         }
     }
 
+    /**
+     * Login Handler
+     * Checks that the given credentials match the username and password in database otherwise
+     * returns a status code of 401 Unauthorized.
+     * @param ctx Javalin context object
+     * @throws JsonProcessingException on error converting JSON into object.
+     */
     private void loginAccountHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account credentials = mapper.readValue(ctx.body(), Account.class);
@@ -77,5 +93,52 @@ public class SocialMediaController {
         }
     }
 
+    /**
+     * Handler to get all messages
+     *
+     * @param ctx Javalin context Object
+     */
+    private void getAllMessagesHandler(Context ctx) {
+        ctx.json(messageService.getAllMessages());
+    }
 
+    /**
+     * Handler to post new message
+     * returns status code 400 if message text is blank or too long (>= 255 chars).
+     *
+     * @param ctx Javalin context object
+     * @throws JsonProcessingException on error converting JSON into object.
+     */
+    private void postMessageHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Message addedMessage = messageService.addMessage(message);
+        if (addedMessage == null) {
+            ctx.status(400);
+        } else {
+            ctx.json(mapper.writeValueAsString(addedMessage));
+        }
+    }
+
+    /**
+     * Handler to get a message by ID
+     * returns status 200 with matching message or blank if no message matches id.
+     *
+     * @param ctx Javalin context object
+     */
+    public void getMessageHandler(Context ctx) {
+        int id = Integer.parseInt(ctx.pathParam("message_id"));
+        ctx.json(messageService.getMessageById(id));
+    }
+
+    /**
+     * Handler to get all messages made by a given account
+     * returns status 200 with list of messages or empty list if no matching account.
+     *
+     * @param ctx Javalin context object
+     */
+    public void getMessagesByAccountHandler(Context ctx) {
+        int id = Integer.parseInt(ctx.pathParam("account_id"));
+        ctx.json(messageService.getAllMessagesByAccountId(id));
+    }
 }
