@@ -41,6 +41,7 @@ public class MessageTest {
         }
         messageDAO = new MessageDAO();
         mockMessageDAO = Mockito.mock(MessageDAO.class);
+        messageService = new MessageService(mockMessageDAO);
     }
 
     /*
@@ -230,7 +231,6 @@ public class MessageTest {
         Mockito.when(mockMessageDAO.getMessageById(1)).thenReturn(message);
         Assert.assertEquals(message, messageService.getMessageById(1));
     }
-
 
     @Test
     public void messageService_AddMessageTest() {
